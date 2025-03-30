@@ -1,9 +1,41 @@
+
+using MyWebAPI.Data;
+using MyWebAPI.Services;
+using Microsoft.EntityFrameworkCore;
+
+
+
 var builder = WebApplication.CreateBuilder(args);
-// Thêm dịch vụ vào container
+
+// Add services to the container.
+
 builder.Services.AddControllers();
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
+builder.Services.AddDbContext<ProductDbContext>(static options =>
+options.UseInMemoryDatabase("ProductDb"));
+
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddEndpointsApiExplorer();
+
+
+
+
+
 var app = builder.Build();
-// Cấu hình pipeline HTTP
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseHttpsRedirection();
+
 app.UseAuthorization();
+
 app.MapControllers();
+
 app.Run();
